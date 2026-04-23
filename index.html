@@ -3,116 +3,219 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Geddy's Daily Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Geddy's Daily Tracker 🐾</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F5F2EE; --surface: #FFFFFF; --surface2: #EDE9E3;
-    --accent: #C85A2A; --accent-light: #F5E6DC;
-    --text: #1A1714; --text3: #A09A94;
-    --border: rgba(26,23,20,0.1); --border2: rgba(26,23,20,0.18);
-    --success: #2D7A4F; --success-bg: #E6F5ED;
-    --warn: #9B6B10; --danger: #B83232;
-    --radius: 12px; --radius-sm: 8px;
+    --bg: #FFF8F0;
+    --surface: #FFFFFF;
+    --surface2: #FFF0E0;
+    --accent: #FF6B35;
+    --accent2: #FFB347;
+    --accent3: #4ECDC4;
+    --purple: #A855F7;
+    --blue: #3B82F6;
+    --text: #2D1B00;
+    --text2: #7C5C3A;
+    --text3: #B8967A;
+    --border: rgba(45,27,0,0.08);
+    --border2: rgba(45,27,0,0.15);
+    --success: #10B981;
+    --success-bg: #ECFDF5;
+    --warn: #F59E0B;
+    --danger: #EF4444;
+    --radius: 16px;
+    --radius-sm: 12px;
+    --shadow: 0 2px 12px rgba(255,107,53,0.08);
+    --shadow-md: 0 4px 20px rgba(255,107,53,0.14);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-  .header { background: var(--text); color: #fff; padding: 20px 24px 16px; position: sticky; top: 0; z-index: 100; }
+  body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8C42 50%, #FFB347 100%);
+    color: #fff; padding: 20px 20px 0; position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 4px 20px rgba(255,107,53,0.3);
+  }
   .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
   .dog-identity { display: flex; align-items: center; gap: 12px; }
-  .paw-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .dog-name { font-size: 20px; font-weight: 600; }
-  .dog-stats { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 1px; font-family: 'DM Mono', monospace; }
-  .date-badge { font-size: 12px; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 99px; }
-  .who-bar { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
-  .who-label { font-size: 12px; color: rgba(255,255,255,0.45); white-space: nowrap; margin-right: 2px; }
-  .who-btn { padding: 5px 14px; font-size: 13px; font-family: 'DM Sans', sans-serif; border: 1px solid rgba(255,255,255,0.2); border-radius: 99px; background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
-  .who-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
-  .tabs { display: flex; background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; top: 113px; z-index: 99; }
-  .tab { flex: 1; padding: 13px 8px; font-size: 14px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--text3); border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .paw-circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: rgba(255,255,255,0.25); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center; font-size: 26px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .dog-name { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .dog-stats { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px; font-family: 'DM Mono', monospace; }
+  .date-badge { font-size: 11px; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.2); padding: 5px 11px; border-radius: 99px; white-space: nowrap; }
+
+  /* WHO BAR */
+  .who-bar { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 14px; scrollbar-width: none; }
+  .who-bar::-webkit-scrollbar { display: none; }
+  .who-label { font-size: 12px; color: rgba(255,255,255,0.7); white-space: nowrap; margin-right: 2px; font-weight: 600; }
+  .who-btn { padding: 6px 16px; font-size: 13px; font-family: 'Nunito', sans-serif; font-weight: 700; border: 2px solid rgba(255,255,255,0.35); border-radius: 99px; background: transparent; color: rgba(255,255,255,0.8); cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+  .who-btn.active { background: #fff; border-color: #fff; color: var(--accent); }
+  .who-btn:hover:not(.active) { background: rgba(255,255,255,0.15); }
+
+  /* TABS */
+  .tabs { display: flex; background: var(--surface); border-bottom: 2px solid var(--border); box-shadow: var(--shadow); position: sticky; top: 122px; z-index: 99; }
+  .tab { flex: 1; padding: 12px 8px; font-size: 13px; font-weight: 700; font-family: 'Nunito', sans-serif; border: none; background: none; cursor: pointer; color: var(--text3); border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* CONTENT */
   .content { padding: 16px; max-width: 640px; margin: 0 auto; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
-  .cal-card { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+
+  /* ICON SUMMARY */
+  .summary-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px;
+  }
+  .summary-card {
+    background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 8px; text-align: center; transition: all 0.2s; position: relative;
+  }
+  .summary-card.lit { border-color: var(--success); background: var(--success-bg); }
+  .summary-icon { font-size: 24px; display: block; margin-bottom: 4px; }
+  .summary-label { font-size: 10px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+  .summary-card.lit .summary-label { color: var(--success); }
+  .summary-badge {
+    position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px;
+    background: var(--accent); color: #fff; font-size: 10px; font-weight: 800;
+    border-radius: 99px; display: flex; align-items: center; justify-content: center;
+    padding: 0 4px; display: none;
+  }
+  .summary-card.has-count .summary-badge { display: flex; }
+
+  /* CAL CARD */
+  .cal-card {
+    background: linear-gradient(135deg, #fff 0%, #FFF8F0 100%);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+    border: 2px solid var(--border); box-shadow: var(--shadow);
+  }
   .cal-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
-  .cal-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
-  .cal-numbers { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--text); }
+  .cal-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); }
+  .cal-numbers { font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; color: var(--text); }
   .cal-numbers span { color: var(--text3); font-size: 13px; }
-  .track { height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
-  .fill { height: 100%; border-radius: 99px; background: var(--success); transition: width 0.4s ease; }
-  .fill.warn { background: var(--warn); }
-  .fill.over { background: var(--danger); }
-  .cal-note { font-size: 12px; color: var(--text3); margin-top: 7px; }
+  .track { height: 10px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--success), #34D399); transition: width 0.5s ease; }
+  .fill.warn { background: linear-gradient(90deg, var(--warn), #FCD34D); }
+  .fill.over { background: linear-gradient(90deg, var(--danger), #F87171); }
+  .cal-note { font-size: 12px; font-weight: 600; color: var(--text3); margin-top: 7px; }
+
+  /* SECTION */
   .section { margin-bottom: 20px; }
-  .section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 0 2px; }
-  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); }
-  .meal-tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--accent-light); color: var(--accent); font-weight: 500; }
-  .check-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; cursor: pointer; transition: background 0.12s, border-color 0.12s; user-select: none; }
-  .check-item:active { transform: scale(0.99); }
-  .check-item.done { background: var(--success-bg); border-color: rgba(45,122,79,0.2); }
-  .check-box { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: all 0.15s; background: var(--bg); }
+  .section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding: 0 2px; }
+  .section-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text2); }
+  .meal-tag { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: var(--surface2); color: var(--accent); font-weight: 700; border: 1.5px solid rgba(255,107,53,0.2); }
+
+  /* CHECK ITEMS */
+  .check-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; cursor: pointer; transition: all 0.18s; user-select: none; box-shadow: var(--shadow); }
+  .check-item:hover { border-color: rgba(255,107,53,0.25); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .check-item:active { transform: scale(0.98); }
+  .check-item.done { background: var(--success-bg); border-color: rgba(16,185,129,0.3); box-shadow: 0 2px 8px rgba(16,185,129,0.1); }
+  .check-box { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: all 0.18s; background: var(--bg); }
   .check-item.done .check-box { background: var(--success); border-color: var(--success); }
-  .checkmark { display: none; color: #fff; font-size: 13px; font-weight: 700; }
+  .checkmark { display: none; color: #fff; font-size: 14px; font-weight: 800; }
   .check-item.done .checkmark { display: block; }
+  .item-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
   .item-body { flex: 1; min-width: 0; }
-  .item-label { font-size: 15px; color: var(--text); }
-  .item-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
-  .item-who { font-size: 11px; color: var(--success); margin-top: 3px; font-family: 'DM Mono', monospace; }
-  .kcal-pill { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); background: var(--surface2); padding: 2px 7px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
-  .check-item.done .kcal-pill { background: rgba(45,122,79,0.1); color: var(--success); }
+  .item-label { font-size: 15px; font-weight: 700; color: var(--text); }
+  .item-sub { font-size: 12px; color: var(--text3); margin-top: 2px; font-weight: 600; }
+  .item-who { font-size: 11px; color: var(--success); margin-top: 3px; font-family: 'DM Mono', monospace; font-weight: 500; }
+  .kcal-pill { font-size: 11px; font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text3); background: var(--surface2); padding: 3px 8px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; border: 1.5px solid var(--border); }
+  .check-item.done .kcal-pill { background: rgba(16,185,129,0.1); color: var(--success); border-color: rgba(16,185,129,0.2); }
+
+  /* EDIT FOOD BTN */
+  .edit-food-btn { margin-left: auto; padding: 4px 10px; font-size: 11px; font-family: 'Nunito', sans-serif; font-weight: 700; border: 1.5px solid var(--border2); border-radius: 99px; background: var(--surface); color: var(--text3); cursor: pointer; transition: all 0.15s; }
+  .edit-food-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* EDIT PANEL */
+  .edit-panel { background: var(--surface2); border: 2px solid rgba(255,107,53,0.2); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 8px; display: none; }
+  .edit-panel.open { display: block; }
+  .edit-panel-title { font-size: 12px; font-weight: 800; color: var(--accent); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .food-edit-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .food-edit-row input[type="text"] { flex: 2; padding: 7px 10px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 13px; font-family: 'Nunito', sans-serif; font-weight: 600; background: #fff; color: var(--text); outline: none; }
+  .food-edit-row input[type="number"] { flex: 1; padding: 7px 10px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 13px; font-family: 'DM Mono', monospace; background: #fff; color: var(--text); outline: none; min-width: 60px; }
+  .food-edit-row input:focus { border-color: var(--accent); }
+  .food-edit-row select { padding: 7px 8px; border: 1.5px solid var(--border2); border-radius: 8px; font-size: 16px; background: #fff; cursor: pointer; }
+  .del-item-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text3); padding: 0 4px; flex-shrink: 0; }
+  .del-item-btn:hover { color: var(--danger); }
+  .add-food-item-btn { width: 100%; padding: 8px; font-size: 13px; font-family: 'Nunito', sans-serif; font-weight: 700; border: 2px dashed rgba(255,107,53,0.3); border-radius: 8px; background: transparent; color: var(--accent); cursor: pointer; margin-top: 4px; transition: all 0.15s; }
+  .add-food-item-btn:hover { background: rgba(255,107,53,0.05); border-color: var(--accent); }
+  .save-food-btn { width: 100%; padding: 9px; font-size: 13px; font-family: 'Nunito', sans-serif; font-weight: 800; border: none; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; margin-top: 8px; }
+
+  /* PROGRESS */
   .progress-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; padding: 0 2px; }
-  .progress-text { font-size: 12px; color: var(--text3); }
-  .reset-btn { font-size: 12px; color: var(--text3); background: none; border: none; cursor: pointer; text-decoration: underline; }
-  .note-row { display: flex; gap: 8px; margin-bottom: 16px; }
-  .note-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); outline: none; }
-  .note-row input:focus { border-color: var(--accent); }
-  .note-row button { padding: 10px 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
-  .log-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; }
-  .log-entry-top { display: flex; justify-content: space-between; align-items: baseline; }
-  .log-who { font-size: 12px; font-weight: 600; color: var(--accent); }
-  .log-time { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); }
-  .log-text { font-size: 14px; color: var(--text); margin-top: 4px; }
-  .empty-log { font-size: 14px; color: var(--text3); padding: 16px 0; text-align: center; }
-  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 12px; text-align: center; }
-  .stat-num { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--accent); }
-  .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
-  .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 8px; }
-  .info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--border); }
-  .info-row:last-child { border-bottom: none; }
-  .info-key { font-size: 13px; color: var(--text3); }
-  .info-val { font-size: 13px; color: var(--text); font-weight: 500; text-align: right; }
-  .activity-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; }
+  .progress-text { font-size: 12px; font-weight: 700; color: var(--text3); }
+  .reset-btn { font-size: 12px; font-weight: 700; color: var(--text3); background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+  /* ACTIVITY BLOCKS */
+  .activity-block { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow); }
   .activity-header { display: flex; align-items: center; justify-content: space-between; }
-  .activity-info { display: flex; align-items: baseline; gap: 10px; }
-  .activity-count { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text3); }
-  .add-activity-btn { padding: 5px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--accent); border-radius: 99px; background: transparent; color: var(--accent); cursor: pointer; font-weight: 500; transition: all 0.15s; }
-  .add-activity-btn:active { background: var(--accent-light); }
+  .activity-info { display: flex; align-items: center; gap: 10px; }
+  .activity-icon { font-size: 22px; }
+  .activity-name { font-size: 15px; font-weight: 700; color: var(--text); }
+  .activity-count { font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text3); background: var(--surface2); padding: 2px 8px; border-radius: 99px; }
+  .add-activity-btn { padding: 6px 14px; font-size: 13px; font-family: 'Nunito', sans-serif; font-weight: 800; border: 2px solid var(--accent); border-radius: 99px; background: transparent; color: var(--accent); cursor: pointer; transition: all 0.15s; }
+  .add-activity-btn:hover { background: var(--accent); color: #fff; }
   .activity-entries { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
-  .activity-entry { display: flex; align-items: center; justify-content: space-between; background: var(--success-bg); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: var(--success); font-family: 'DM Mono', monospace; }
+  .activity-entry { display: flex; align-items: center; justify-content: space-between; background: var(--success-bg); border-radius: 8px; padding: 6px 10px; font-size: 12px; color: var(--success); font-family: 'DM Mono', monospace; font-weight: 500; border: 1px solid rgba(16,185,129,0.15); }
   .remove-entry { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; padding: 0 4px; line-height: 1; }
-  .weight-input-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+
+  /* LOG */
+  .note-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .note-row input { flex: 1; padding: 11px 14px; border: 2px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 600; background: var(--surface); color: var(--text); outline: none; }
+  .note-row input:focus { border-color: var(--accent); }
+  .note-row button { padding: 11px 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; }
+  .log-entry { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow); }
+  .log-entry-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .log-who { font-size: 12px; font-weight: 800; color: var(--accent); }
+  .log-time { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); }
+  .log-text { font-size: 14px; font-weight: 600; color: var(--text); margin-top: 4px; }
+  .empty-log { font-size: 14px; font-weight: 600; color: var(--text3); padding: 24px 0; text-align: center; }
+
+  /* INFO */
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 12px; text-align: center; box-shadow: var(--shadow); }
+  .stat-icon { font-size: 22px; margin-bottom: 4px; }
+  .stat-num { font-size: 22px; font-weight: 800; font-family: 'DM Mono', monospace; color: var(--accent); }
+  .stat-lbl { font-size: 11px; font-weight: 700; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .info-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 8px; box-shadow: var(--shadow); }
+  .info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { font-size: 13px; font-weight: 600; color: var(--text3); }
+  .info-val { font-size: 13px; font-weight: 700; color: var(--text); text-align: right; }
+
+  /* WEIGHT */
+  .weight-input-card { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); }
   .weight-input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
   .weight-input-row > div { flex: 1; min-width: 100px; }
-  .field-label { font-size: 12px; color: var(--text3); display: block; margin-bottom: 4px; }
-  .weight-input-row input { width: 100%; padding: 8px 10px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); outline: none; }
+  .field-label { font-size: 12px; font-weight: 700; color: var(--text3); display: block; margin-bottom: 4px; }
+  .weight-input-row input { width: 100%; padding: 9px 10px; border: 2px solid var(--border2); border-radius: 10px; font-size: 14px; font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); outline: none; font-weight: 600; }
   .weight-input-row input:focus { border-color: var(--accent); }
-  .weight-save-btn { width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
-  .weight-history-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .weight-save-btn { width: 100%; padding: 11px; background: var(--accent); color: #fff; border: none; border-radius: 10px; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 800; cursor: pointer; }
+  .weight-history-entry { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
   .weight-entry-left { display: flex; align-items: baseline; gap: 10px; }
-  .weight-val { font-size: 18px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
-  .weight-date { font-size: 12px; color: var(--text3); }
-  .weight-note-text { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .weight-val { font-size: 18px; font-weight: 800; font-family: 'DM Mono', monospace; color: var(--text); }
+  .weight-date { font-size: 12px; font-weight: 600; color: var(--text3); }
+  .weight-note-text { font-size: 12px; font-weight: 600; color: var(--text3); margin-top: 2px; }
   .weight-entry-right { display: flex; align-items: center; gap: 8px; }
-  .weight-delta { font-size: 12px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 99px; }
-  .weight-delta.up { background: #FDEAEA; color: var(--danger); }
+  .weight-delta { font-size: 12px; font-family: 'DM Mono', monospace; font-weight: 600; padding: 3px 9px; border-radius: 99px; }
+  .weight-delta.up { background: #FEE2E2; color: var(--danger); }
   .weight-delta.down { background: var(--success-bg); color: var(--success); }
   .weight-delta.same { background: var(--surface2); color: var(--text3); }
   .weight-delete-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 18px; padding: 0 2px; line-height: 1; }
-  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+  .chart-wrap { background: var(--surface); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; box-shadow: var(--shadow); }
   .chart-svg { width: 100%; overflow: visible; display: block; }
-  @media (max-width: 480px) { .content { padding: 12px; } .weight-input-row { flex-direction: column; } }
+
+  @media (max-width: 480px) {
+    .content { padding: 12px; }
+    .weight-input-row { flex-direction: column; }
+    .summary-bar { grid-template-columns: repeat(4,1fr); gap: 6px; }
+    .summary-icon { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -138,144 +241,151 @@
 </div>
 
 <div class="tabs">
-  <button class="tab active" data-tab="today">Today</button>
-  <button class="tab" data-tab="log">Log</button>
-  <button class="tab" data-tab="info">Geddy's Info</button>
+  <button class="tab active" data-tab="today">🗓 Today</button>
+  <button class="tab" data-tab="log">📋 Log</button>
+  <button class="tab" data-tab="info">🐶 Geddy</button>
 </div>
 
 <div class="content">
 
+  <!-- TODAY -->
   <div id="today" class="tab-panel active">
+
+    <!-- ICON SUMMARY -->
+    <div class="summary-bar" id="summaryBar">
+      <div class="summary-card" id="sum-meals">
+        <span class="summary-icon">🍽️</span>
+        <span class="summary-label">Meals</span>
+        <span class="summary-badge" id="sum-meals-badge">0</span>
+      </div>
+      <div class="summary-card" id="sum-walk">
+        <span class="summary-icon">🦮</span>
+        <span class="summary-label">Walks</span>
+        <span class="summary-badge" id="sum-walk-badge">0</span>
+      </div>
+      <div class="summary-card" id="sum-poo">
+        <span class="summary-icon">💩</span>
+        <span class="summary-label">Poos</span>
+        <span class="summary-badge" id="sum-poo-badge">0</span>
+      </div>
+      <div class="summary-card" id="sum-pill">
+        <span class="summary-icon">💊</span>
+        <span class="summary-label">Pill</span>
+        <span class="summary-badge" id="sum-pill-badge">0</span>
+      </div>
+    </div>
+
     <div class="cal-card">
       <div class="cal-top">
-        <div class="cal-title">Calories today</div>
+        <div class="cal-title">🔥 Calories Today</div>
         <div class="cal-numbers" id="calNum">0 <span>/ 324 kcal</span></div>
       </div>
       <div class="track"><div class="fill" id="calFill" style="width:0%"></div></div>
       <div class="cal-note" id="calNote">Tap items below to track</div>
     </div>
 
+    <!-- MORNING MEAL -->
     <div class="section">
       <div class="section-head">
-        <div class="section-title">Morning meal</div>
-        <div class="meal-tag">meal 1 · ~162 kcal</div>
+        <div class="section-title">☀️ Morning Meal</div>
+        <div class="meal-tag">~162 kcal</div>
+        <button class="edit-food-btn" data-meal="morning">✏️ Edit</button>
       </div>
-      <div class="check-item" data-id="pill" data-kcal="0">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 allergy pill</div><div class="item-sub">Give with food</div><div class="item-who"></div></div>
-        <div class="kcal-pill">0 kcal</div>
+      <div class="edit-panel" id="edit-morning">
+        <div class="edit-panel-title">Edit Morning Meal Items</div>
+        <div id="edit-morning-items"></div>
+        <button class="add-food-item-btn" data-meal="morning">+ Add Item</button>
+        <button class="save-food-btn" data-meal="morning">Save Changes</button>
       </div>
-      <div class="check-item" data-id="kib1" data-kcal="28">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">¼ cup kibble w/ dust</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~28 kcal</div>
-      </div>
-      <div class="check-item" data-id="sp" data-kcal="25">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 sweet potato piece</div><div class="item-sub">Topper</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~25 kcal</div>
-      </div>
-      <div class="check-item" data-id="vl" data-kcal="20">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 Vibrant Life treat</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~20 kcal</div>
-      </div>
-      <div class="check-item" data-id="bl1" data-kcal="15">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 beef liver treat</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~15 kcal</div>
-      </div>
+      <div id="checklist-morning"></div>
     </div>
 
+    <!-- EVENING MEAL -->
     <div class="section">
       <div class="section-head">
-        <div class="section-title">Evening meal</div>
-        <div class="meal-tag">meal 2 · ~162 kcal</div>
+        <div class="section-title">🌙 Evening Meal</div>
+        <div class="meal-tag">~162 kcal</div>
+        <button class="edit-food-btn" data-meal="evening">✏️ Edit</button>
       </div>
-      <div class="check-item" data-id="kib2" data-kcal="28">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">¼ cup kibble w/ dust</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~28 kcal</div>
+      <div class="edit-panel" id="edit-evening">
+        <div class="edit-panel-title">Edit Evening Meal Items</div>
+        <div id="edit-evening-items"></div>
+        <button class="add-food-item-btn" data-meal="evening">+ Add Item</button>
+        <button class="save-food-btn" data-meal="evening">Save Changes</button>
       </div>
-      <div class="check-item" data-id="bl2" data-kcal="15">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 beef liver treat</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~15 kcal</div>
-      </div>
-      <div class="check-item" data-id="gr" data-kcal="30">
-        <div class="check-box"><span class="checkmark">✓</span></div>
-        <div class="item-body"><div class="item-label">1 Greenie</div><div class="item-sub">Dental treat</div><div class="item-who"></div></div>
-        <div class="kcal-pill">~30 kcal</div>
-      </div>
+      <div id="checklist-evening"></div>
     </div>
 
+    <!-- DAILY CARE -->
     <div class="section">
-      <div class="section-head"><div class="section-title">Daily care</div></div>
+      <div class="section-head"><div class="section-title">💚 Daily Care</div></div>
       <div class="activity-block">
         <div class="activity-header">
-          <div class="activity-info"><span class="item-label">Walks</span><span class="activity-count" id="count-walk">0 today</span></div>
-          <button class="add-activity-btn" data-type="walk" data-label="Walk">+ Log walk</button>
+          <div class="activity-info"><span class="activity-icon">🦮</span><span class="activity-name">Walks</span><span class="activity-count" id="count-walk">0 today</span></div>
+          <button class="add-activity-btn" data-type="walk" data-label="Walk">+ Log</button>
         </div>
         <div class="activity-entries" id="entries-walk"></div>
       </div>
       <div class="activity-block">
         <div class="activity-header">
-          <div class="activity-info"><span class="item-label">Poos</span><span class="activity-count" id="count-poo">0 today</span></div>
-          <button class="add-activity-btn" data-type="poo" data-label="Poo">+ Log poo</button>
+          <div class="activity-info"><span class="activity-icon">💩</span><span class="activity-name">Poos</span><span class="activity-count" id="count-poo">0 today</span></div>
+          <button class="add-activity-btn" data-type="poo" data-label="Poo">+ Log</button>
         </div>
         <div class="activity-entries" id="entries-poo"></div>
       </div>
       <div class="activity-block">
         <div class="activity-header">
-          <div class="activity-info"><span class="item-label">Water refills</span><span class="activity-count" id="count-water">0 today</span></div>
-          <button class="add-activity-btn" data-type="water" data-label="Water refilled">+ Log refill</button>
+          <div class="activity-info"><span class="activity-icon">💧</span><span class="activity-name">Water Refills</span><span class="activity-count" id="count-water">0 today</span></div>
+          <button class="add-activity-btn" data-type="water" data-label="Water Refilled">+ Log</button>
         </div>
         <div class="activity-entries" id="entries-water"></div>
       </div>
       <div class="activity-block">
         <div class="activity-header">
-          <div class="activity-info"><span class="item-label">Playtime</span><span class="activity-count" id="count-play">0 today</span></div>
-          <button class="add-activity-btn" data-type="play" data-label="Playtime">+ Log play</button>
+          <div class="activity-info"><span class="activity-icon">🎾</span><span class="activity-name">Playtime</span><span class="activity-count" id="count-play">0 today</span></div>
+          <button class="add-activity-btn" data-type="play" data-label="Playtime">+ Log</button>
         </div>
         <div class="activity-entries" id="entries-play"></div>
       </div>
     </div>
 
     <div class="progress-row">
-      <span class="progress-text" id="progressText">0 of 12 items done</span>
-      <button class="reset-btn" id="resetBtn">Reset today</button>
+      <span class="progress-text" id="progressText">0 of 0 items done today</span>
+      <button class="reset-btn" id="resetBtn">🔄 Reset Today</button>
     </div>
   </div>
 
+  <!-- LOG -->
   <div id="log" class="tab-panel">
     <div class="section">
-      <div class="section-head"><div class="section-title">Add a note</div></div>
+      <div class="section-head"><div class="section-title">✏️ Add A Note</div></div>
       <div class="note-row">
         <input type="text" id="noteInput" placeholder="e.g. Seemed itchy this morning..." />
         <button id="addNoteBtn">Add</button>
       </div>
     </div>
     <div class="section">
-      <div class="section-head"><div class="section-title">Activity log</div></div>
-      <div id="logList"><div class="empty-log">No activity yet today.</div></div>
+      <div class="section-head"><div class="section-title">📋 Activity Log</div></div>
+      <div id="logList"><div class="empty-log">🐾 No activity yet today!</div></div>
     </div>
   </div>
 
+  <!-- INFO -->
   <div id="info" class="tab-panel">
     <div class="stat-grid">
-      <div class="stat-card"><div class="stat-num" id="currentWeightDisplay">17.2</div><div class="stat-lbl">lbs</div></div>
-      <div class="stat-card"><div class="stat-num">6.5</div><div class="stat-lbl">BCS /9</div></div>
-      <div class="stat-card"><div class="stat-num">324</div><div class="stat-lbl">kcal/day</div></div>
+      <div class="stat-card"><div class="stat-icon">⚖️</div><div class="stat-num" id="currentWeightDisplay">17.2</div><div class="stat-lbl">lbs</div></div>
+      <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-num">6.5</div><div class="stat-lbl">BCS /9</div></div>
+      <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-num">324</div><div class="stat-lbl">kcal/day</div></div>
     </div>
     <div class="section">
-      <div class="section-head"><div class="section-title">Weight history</div></div>
+      <div class="section-head"><div class="section-title">⚖️ Weight History</div></div>
       <div class="weight-input-card">
         <div class="weight-input-row">
-          <div><label class="field-label" for="weightInput">New weight (lbs)</label><input type="number" id="weightInput" step="0.1" min="0" max="200" placeholder="e.g. 16.8" /></div>
+          <div><label class="field-label" for="weightInput">New Weight (lbs)</label><input type="number" id="weightInput" step="0.1" min="0" max="200" placeholder="e.g. 16.8" /></div>
           <div><label class="field-label" for="weightDate">Date</label><input type="date" id="weightDate" /></div>
           <div><label class="field-label" for="weightNote">Note (optional)</label><input type="text" id="weightNote" placeholder="e.g. vet visit" /></div>
         </div>
-        <button class="weight-save-btn" id="saveWeightBtn">Save weight entry</button>
+        <button class="weight-save-btn" id="saveWeightBtn">💾 Save Weight Entry</button>
       </div>
       <div id="weightChartWrap" style="display:none;" class="chart-wrap">
         <svg id="weightChart" class="chart-svg" height="120"></svg>
@@ -283,26 +393,13 @@
       <div id="weightHistoryList"></div>
     </div>
     <div class="section">
-      <div class="section-head"><div class="section-title">Vet prescription</div></div>
+      <div class="section-head"><div class="section-title">🏥 Vet Prescription</div></div>
       <div class="info-card">
         <div class="info-row"><span class="info-key">Vet</span><span class="info-val">Dr. Cybulski</span></div>
-        <div class="info-row"><span class="info-key">Last visit</span><span class="info-val">Dec 9, 2025</span></div>
-        <div class="info-row"><span class="info-key">Daily kcal</span><span class="info-val">324 kcal</span></div>
-        <div class="info-row"><span class="info-key">Per meal</span><span class="info-val">162 kcal × 2</span></div>
+        <div class="info-row"><span class="info-key">Last Visit</span><span class="info-val">Dec 9, 2025</span></div>
+        <div class="info-row"><span class="info-key">Daily Kcal</span><span class="info-val">324 kcal</span></div>
+        <div class="info-row"><span class="info-key">Per Meal</span><span class="info-val">162 kcal × 2</span></div>
         <div class="info-row"><span class="info-key">Prescription</span><span class="info-val">Royal Canin</span></div>
-      </div>
-    </div>
-    <div class="section">
-      <div class="section-head"><div class="section-title">Feeding guide</div></div>
-      <div class="info-card">
-        <div class="info-row"><span class="info-key">Morning</span><span class="info-val">¼ cup kibble w/ dust</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 sweet potato</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 Vibrant Life treat</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 beef liver treat</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 allergy pill</span></div>
-        <div class="info-row"><span class="info-key">Evening</span><span class="info-val">¼ cup kibble w/ dust</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 beef liver treat</span></div>
-        <div class="info-row"><span class="info-key"></span><span class="info-val">1 Greenie</span></div>
       </div>
     </div>
   </div>
@@ -318,14 +415,41 @@
   var logEntries = [];
   var activities = { walk: [], poo: [], water: [], play: [] };
   var weightHistory = [];
+
+  // DEFAULT FOOD ITEMS
+  var defaultMeals = {
+    morning: [
+      { icon: '💊', label: 'Allergy Pill', kcal: 0, note: 'Give with food', id: 'pill' },
+      { icon: '🥣', label: 'Kibble W/ Dust', kcal: 28, note: '¼ cup', id: 'kib1' },
+      { icon: '🍠', label: 'Sweet Potato', kcal: 25, note: 'Topper', id: 'sp' },
+      { icon: '🦴', label: 'Vibrant Life Treat', kcal: 20, note: '', id: 'vl' },
+      { icon: '🥩', label: 'Beef Liver Treat', kcal: 15, note: '', id: 'bl1' }
+    ],
+    evening: [
+      { icon: '🥣', label: 'Kibble W/ Dust', kcal: 28, note: '¼ cup', id: 'kib2' },
+      { icon: '🥩', label: 'Beef Liver Treat', kcal: 15, note: '', id: 'bl2' },
+      { icon: '🟢', label: 'Greenie', kcal: 30, note: 'Dental treat', id: 'gr' }
+    ]
+  };
+
+  var meals = {};
+  try {
+    var saved = localStorage.getItem('geddy_meals');
+    meals = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultMeals));
+  } catch(e) { meals = JSON.parse(JSON.stringify(defaultMeals)); }
+
   try { weightHistory = JSON.parse(localStorage.getItem('geddy_weights') || '[]'); } catch(e) {}
 
+  // INIT
   document.getElementById('weightDate').value = new Date().toISOString().split('T')[0];
   document.getElementById('dateBadge').textContent = new Date().toLocaleDateString('en-CA', {weekday:'short', month:'short', day:'numeric'});
+  renderChecklist('morning');
+  renderChecklist('evening');
   renderWeightHistory();
   updateProgress();
+  updateSummary();
 
-  // WHO
+  // WHO BUTTONS
   document.querySelectorAll('.who-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
       who = btn.dataset.who;
@@ -346,31 +470,131 @@
     });
   });
 
-  // CHECK ITEMS
-  document.querySelectorAll('.check-item').forEach(function(el) {
-    el.addEventListener('click', function() {
-      var id = el.dataset.id;
-      var kcal = parseInt(el.dataset.kcal, 10) || 0;
-      var whoEl = el.querySelector('.item-who');
-      var label = el.querySelector('.item-label').textContent;
-      if (checked[id]) {
-        el.classList.remove('done');
-        whoEl.textContent = '';
-        calTotal = Math.max(0, calTotal - kcal);
-        delete checked[id];
-        addLog('Unmarked: ' + label);
-      } else {
-        el.classList.add('done');
-        var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-        whoEl.textContent = who + ' \u00b7 ' + t;
-        calTotal += kcal;
-        checked[id] = true;
-        addLog('\u2713 ' + label + (kcal ? ' (+' + kcal + ' kcal)' : ''));
-      }
-      updateCal();
-      updateProgress();
+  // EDIT FOOD BUTTONS
+  document.querySelectorAll('.edit-food-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var meal = btn.dataset.meal;
+      var panel = document.getElementById('edit-' + meal);
+      panel.classList.toggle('open');
+      if (panel.classList.contains('open')) renderEditPanel(meal);
     });
   });
+
+  // ADD FOOD ITEM BUTTONS
+  document.querySelectorAll('.add-food-item-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var meal = btn.dataset.meal;
+      meals[meal].push({ icon: '🦴', label: 'New Item', kcal: 0, note: '', id: 'item_' + Date.now() });
+      renderEditPanel(meal);
+    });
+  });
+
+  // SAVE FOOD BUTTONS
+  document.querySelectorAll('.save-food-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var meal = btn.dataset.meal;
+      var rows = document.querySelectorAll('#edit-' + meal + '-items .food-edit-row');
+      var newItems = [];
+      rows.forEach(function(row, i) {
+        var labelEl = row.querySelector('.food-label-input');
+        var kcalEl = row.querySelector('.food-kcal-input');
+        var iconEl = row.querySelector('.food-icon-select');
+        var noteEl = row.querySelector('.food-note-input');
+        if (labelEl && labelEl.value.trim()) {
+          newItems.push({
+            icon: iconEl ? iconEl.value : '🦴',
+            label: labelEl.value.trim(),
+            kcal: parseInt(kcalEl ? kcalEl.value : 0, 10) || 0,
+            note: noteEl ? noteEl.value.trim() : '',
+            id: meals[meal][i] ? meals[meal][i].id : 'item_' + Date.now() + '_' + i
+          });
+        }
+      });
+      meals[meal] = newItems;
+      try { localStorage.setItem('geddy_meals', JSON.stringify(meals)); } catch(e) {}
+      // Reset any checked state for this meal
+      Object.keys(checked).forEach(function(k) {
+        var found = meals[meal].find(function(m) { return m.id === k; });
+        if (!found) delete checked[k];
+      });
+      recalcCalories();
+      renderChecklist(meal);
+      document.getElementById('edit-' + meal).classList.remove('open');
+      updateProgress();
+      updateSummary();
+    });
+  });
+
+  function renderEditPanel(meal) {
+    var container = document.getElementById('edit-' + meal + '-items');
+    var icons = ['🥣','🍠','🥩','🦴','🟢','💊','🐟','🧀','🥕','🫐','🍗','🥚','🌿','🍖'];
+    container.innerHTML = meals[meal].map(function(item, i) {
+      var iconOpts = icons.map(function(ic) {
+        return '<option value="' + ic + '"' + (ic === item.icon ? ' selected' : '') + '>' + ic + '</option>';
+      }).join('');
+      return '<div class="food-edit-row">' +
+        '<select class="food-icon-select">' + iconOpts + '</select>' +
+        '<input type="text" class="food-label-input" value="' + item.label + '" placeholder="Item name" />' +
+        '<input type="number" class="food-kcal-input" value="' + item.kcal + '" placeholder="kcal" min="0" max="999" />' +
+        '<input type="text" class="food-note-input" value="' + (item.note||'') + '" placeholder="note" style="flex:1;min-width:60px;" />' +
+        '<button class="del-item-btn" data-meal="' + meal + '" data-idx="' + i + '">\u00d7</button>' +
+        '</div>';
+    }).join('');
+    container.querySelectorAll('.del-item-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var idx = parseInt(btn.dataset.idx, 10);
+        meals[btn.dataset.meal].splice(idx, 1);
+        renderEditPanel(btn.dataset.meal);
+      });
+    });
+  }
+
+  function renderChecklist(meal) {
+    var container = document.getElementById('checklist-' + meal);
+    container.innerHTML = meals[meal].map(function(item) {
+      var isDone = checked[item.id] ? ' done' : '';
+      return '<div class="check-item' + isDone + '" data-id="' + item.id + '" data-kcal="' + item.kcal + '">' +
+        '<div class="check-box"><span class="checkmark">\u2713</span></div>' +
+        '<span class="item-icon">' + item.icon + '</span>' +
+        '<div class="item-body"><div class="item-label">' + item.label + '</div>' +
+        (item.note ? '<div class="item-sub">' + item.note + '</div>' : '') +
+        '<div class="item-who">' + (checked[item.id] ? checked[item.id].stamp : '') + '</div></div>' +
+        '<div class="kcal-pill">' + (item.kcal > 0 ? '~' + item.kcal + ' kcal' : '0 kcal') + '</div>' +
+        '</div>';
+    }).join('');
+    container.querySelectorAll('.check-item').forEach(function(el) {
+      el.addEventListener('click', function() {
+        var id = el.dataset.id;
+        var kcal = parseInt(el.dataset.kcal, 10) || 0;
+        var label = el.querySelector('.item-label').textContent;
+        if (checked[id]) {
+          calTotal = Math.max(0, calTotal - kcal);
+          delete checked[id];
+          addLog('Unmarked: ' + label);
+        } else {
+          var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+          var stamp = who + ' \u00b7 ' + t;
+          calTotal += kcal;
+          checked[id] = { stamp: stamp };
+          addLog('\u2713 ' + label + (kcal ? ' (+' + kcal + ' kcal)' : ''));
+        }
+        renderChecklist(meal);
+        updateCal();
+        updateProgress();
+        updateSummary();
+      });
+    });
+  }
+
+  function recalcCalories() {
+    calTotal = 0;
+    ['morning','evening'].forEach(function(meal) {
+      meals[meal].forEach(function(item) {
+        if (checked[item.id]) calTotal += (item.kcal || 0);
+      });
+    });
+    updateCal();
+  }
 
   // ACTIVITY BUTTONS
   document.querySelectorAll('.add-activity-btn').forEach(function(btn) {
@@ -382,6 +606,7 @@
       addLog('\u2713 ' + label + ' (' + who + ')');
       renderActivities(type);
       updateProgress();
+      updateSummary();
     });
   });
 
@@ -399,26 +624,58 @@
         activities[tp] = activities[tp].filter(function(e) { return e.id !== id; });
         renderActivities(tp);
         updateProgress();
+        updateSummary();
       });
     });
+  }
+
+  function updateSummary() {
+    // Meals: count checked food items across both meals
+    var mealsDone = Object.keys(checked).length;
+    var totalItems = meals.morning.length + meals.evening.length;
+    var mealsCard = document.getElementById('sum-meals');
+    var mealsBadge = document.getElementById('sum-meals-badge');
+    mealsBadge.textContent = mealsDone;
+    mealsCard.classList.toggle('lit', mealsDone > 0 && mealsDone >= totalItems);
+    mealsCard.classList.toggle('has-count', mealsDone > 0);
+
+    // Walks
+    var walkN = activities.walk.length;
+    var walkCard = document.getElementById('sum-walk');
+    var walkBadge = document.getElementById('sum-walk-badge');
+    walkBadge.textContent = walkN;
+    walkCard.classList.toggle('lit', walkN > 0);
+    walkCard.classList.toggle('has-count', walkN > 0);
+
+    // Poos
+    var pooN = activities.poo.length;
+    var pooCard = document.getElementById('sum-poo');
+    var pooBadge = document.getElementById('sum-poo-badge');
+    pooBadge.textContent = pooN;
+    pooCard.classList.toggle('lit', pooN > 0);
+    pooCard.classList.toggle('has-count', pooN > 0);
+
+    // Pill
+    var pillDone = !!checked['pill'];
+    var pillCard = document.getElementById('sum-pill');
+    pillCard.classList.toggle('lit', pillDone);
+    pillCard.classList.toggle('has-count', false);
   }
 
   // RESET
   document.getElementById('resetBtn').addEventListener('click', function() {
     if (!confirm('Reset all of today\'s checks?')) return;
-    document.querySelectorAll('.check-item').forEach(function(el) {
-      el.classList.remove('done');
-      el.querySelector('.item-who').textContent = '';
-    });
     Object.keys(checked).forEach(function(k) { delete checked[k]; });
     Object.keys(activities).forEach(function(k) { activities[k] = []; });
+    calTotal = 0;
+    ['morning','evening'].forEach(function(m) { renderChecklist(m); });
     ['walk','poo','water','play'].forEach(function(t) {
       document.getElementById('entries-' + t).innerHTML = '';
       document.getElementById('count-' + t).textContent = '0 today';
     });
-    calTotal = 0;
     updateCal();
     updateProgress();
+    updateSummary();
     addLog('Day reset');
   });
 
@@ -442,21 +699,17 @@
     if (!val || isNaN(val) || !date) { alert('Please enter a weight and date.'); return; }
     weightHistory.push({ val: val, date: date, note: note, who: who, id: Date.now() });
     weightHistory.sort(function(a, b) { return a.date.localeCompare(b.date); });
-    saveWeights();
+    try { localStorage.setItem('geddy_weights', JSON.stringify(weightHistory)); } catch(e) {}
     document.getElementById('weightInput').value = '';
     document.getElementById('weightNote').value = '';
     renderWeightHistory();
   });
 
-  function saveWeights() {
-    try { localStorage.setItem('geddy_weights', JSON.stringify(weightHistory)); } catch(e) {}
-  }
-
   function renderWeightHistory() {
     var list = document.getElementById('weightHistoryList');
     var chartWrap = document.getElementById('weightChartWrap');
     if (!weightHistory.length) {
-      list.innerHTML = '<div class="empty-log">No weight entries yet. Add the first one above!</div>';
+      list.innerHTML = '<div class="empty-log">⚖️ No weight entries yet. Add the first one above!</div>';
       chartWrap.style.display = 'none';
       return;
     }
@@ -484,7 +737,7 @@
         if (!confirm('Remove this weight entry?')) return;
         var id = parseInt(btn.dataset.wid, 10);
         weightHistory = weightHistory.filter(function(e) { return e.id !== id; });
-        saveWeights();
+        try { localStorage.setItem('geddy_weights', JSON.stringify(weightHistory)); } catch(e) {}
         renderWeightHistory();
       });
     });
@@ -500,54 +753,53 @@
     var minV = Math.min.apply(null, vals) - 0.5;
     var maxV = Math.max.apply(null, vals) + 0.5;
     var n = vals.length;
-    var px = function(i) { return n === 1 ? W / 2 : (i / (n - 1)) * (W - 24) + 12; };
-    var py = function(v) { return H - 16 - ((v - minV) / (maxV - minV)) * (H - 28); };
+    var px = function(i) { return n === 1 ? W/2 : (i/(n-1))*(W-24)+12; };
+    var py = function(v) { return H-16-((v-minV)/(maxV-minV))*(H-28); };
     var lines = '';
     for (var i = 0; i <= 2; i++) {
-      var y = py(minV + (maxV - minV) * i / 2);
-      lines += '<line x1="0" y1="' + y.toFixed(1) + '" x2="' + W + '" y2="' + y.toFixed(1) + '" stroke="#EDE9E3" stroke-width="1"/>';
+      var y = py(minV+(maxV-minV)*i/2);
+      lines += '<line x1="0" y1="'+y.toFixed(1)+'" x2="'+W+'" y2="'+y.toFixed(1)+'" stroke="#FFF0E0" stroke-width="1"/>';
     }
-    var pathD = vals.map(function(v, i) { return (i === 0 ? 'M' : 'L') + px(i).toFixed(1) + ',' + py(v).toFixed(1); }).join(' ');
-    var fillD = pathD + ' L' + px(n-1).toFixed(1) + ',' + H + ' L' + px(0).toFixed(1) + ',' + H + ' Z';
+    var pathD = vals.map(function(v,i){ return (i===0?'M':'L')+px(i).toFixed(1)+','+py(v).toFixed(1); }).join(' ');
+    var fillD = pathD+' L'+px(n-1).toFixed(1)+','+H+' L'+px(0).toFixed(1)+','+H+' Z';
     var dots = '';
-    vals.forEach(function(v, i) {
-      var x = px(i), y2 = py(v), isLast = i === n - 1;
-      dots += '<circle cx="' + x.toFixed(1) + '" cy="' + y2.toFixed(1) + '" r="' + (isLast ? 4 : 3) + '" fill="' + (isLast ? '#C85A2A' : '#A09A94') + '"/>';
-      if (isLast || i === 0) {
-        var anchor = i === 0 ? 'start' : 'end';
-        dots += '<text x="' + x.toFixed(1) + '" y="' + (y2 - 7).toFixed(1) + '" font-size="11" fill="#6B6560" text-anchor="' + anchor + '" font-family="DM Mono,monospace">' + v.toFixed(1) + '</text>';
+    vals.forEach(function(v,i){
+      var x=px(i),y2=py(v),isLast=i===n-1;
+      dots+='<circle cx="'+x.toFixed(1)+'" cy="'+y2.toFixed(1)+'" r="'+(isLast?5:3)+'" fill="'+(isLast?'#FF6B35':'#FFB347')+'"/>';
+      if(isLast||i===0){
+        dots+='<text x="'+x.toFixed(1)+'" y="'+(y2-8).toFixed(1)+'" font-size="11" fill="#7C5C3A" text-anchor="'+(i===0?'start':'end')+'" font-family="DM Mono,monospace" font-weight="600">'+v.toFixed(1)+'</text>';
       }
     });
-    svg.innerHTML = lines + '<path d="' + fillD + '" fill="#C85A2A" fill-opacity="0.08"/><path d="' + pathD + '" fill="none" stroke="#C85A2A" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' + dots;
+    svg.innerHTML = lines+'<path d="'+fillD+'" fill="#FF6B35" fill-opacity="0.08"/><path d="'+pathD+'" fill="none" stroke="#FF6B35" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+dots;
   }
 
   function updateCal() {
-    var pct = Math.min((calTotal / MAX_CAL) * 100, 100);
-    document.getElementById('calNum').innerHTML = calTotal + ' <span>/ 324 kcal</span>';
+    var pct = Math.min((calTotal/MAX_CAL)*100,100);
+    document.getElementById('calNum').innerHTML = calTotal+' <span>/ 324 kcal</span>';
     var fill = document.getElementById('calFill');
-    fill.style.width = pct + '%';
-    fill.className = 'fill' + (pct > 100 ? ' over' : pct > 85 ? ' warn' : '');
-    var left = MAX_CAL - calTotal;
-    document.getElementById('calNote').textContent = left > 0 ? left + ' kcal remaining' : left === 0 ? '\u2713 Daily goal reached!' : 'Over by ' + Math.abs(left) + ' kcal';
+    fill.style.width = pct+'%';
+    fill.className = 'fill'+(pct>100?' over':pct>85?' warn':'');
+    var left = MAX_CAL-calTotal;
+    document.getElementById('calNote').textContent = left>0 ? left+' kcal remaining \ud83d\udc4d' : left===0 ? '\u2728 Daily goal reached!' : 'Over by '+Math.abs(left)+' kcal \u26a0\ufe0f';
   }
 
   function updateProgress() {
     var done = Object.keys(checked).length;
-    var actDone = Object.keys(activities).filter(function(k) { return activities[k].length > 0; }).length;
-    var total = document.querySelectorAll('.check-item').length + 4;
-    document.getElementById('progressText').textContent = (done + actDone) + ' of ' + total + ' items done today';
+    var actDone = Object.keys(activities).filter(function(k){ return activities[k].length>0; }).length;
+    var total = meals.morning.length + meals.evening.length + 4;
+    document.getElementById('progressText').textContent = (done+actDone)+' of '+total+' items done today';
   }
 
   function addLog(text) {
-    var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-    logEntries.unshift({ text: text, who: who, t: t });
+    var t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    logEntries.unshift({text:text,who:who,t:t});
   }
 
   function renderLog() {
     var list = document.getElementById('logList');
-    if (!logEntries.length) { list.innerHTML = '<div class="empty-log">No activity yet today.</div>'; return; }
-    list.innerHTML = logEntries.map(function(e) {
-      return '<div class="log-entry"><div class="log-entry-top"><span class="log-who">' + e.who + '</span><span class="log-time">' + e.t + '</span></div><div class="log-text">' + e.text + '</div></div>';
+    if (!logEntries.length) { list.innerHTML = '<div class="empty-log">\ud83d\udc3e No activity yet today!</div>'; return; }
+    list.innerHTML = logEntries.map(function(e){
+      return '<div class="log-entry"><div class="log-entry-top"><span class="log-who">'+e.who+'</span><span class="log-time">'+e.t+'</span></div><div class="log-text">'+e.text+'</div></div>';
     }).join('');
   }
 
