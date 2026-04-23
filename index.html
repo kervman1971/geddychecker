@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geddy's Daily Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2EE;
+    --surface: #FFFFFF;
+    --surface2: #EDE9E3;
+    --accent: #C85A2A;
+    --accent-light: #F5E6DC;
+    --text: #1A1714;
+    --text2: #6B6560;
+    --text3: #A09A94;
+    --border: rgba(26,23,20,0.1);
+    --border2: rgba(26,23,20,0.18);
+    --success: #2D7A4F;
+    --success-bg: #E6F5ED;
+    --warn: #9B6B10;
+    --danger: #B83232;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  .header { background: var(--text); color: #fff; padding: 20px 24px 16px; position: sticky; top: 0; z-index: 100; }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .dog-identity { display: flex; align-items: center; gap: 12px; }
+  .paw-circle { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+  .dog-name { font-size: 20px; font-weight: 600; }
+  .dog-stats { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 1px; font-family: 'DM Mono', monospace; }
+  .date-badge { font-size: 12px; font-family: 'DM Mono', monospace; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 99px; }
+  .who-bar { display: flex; align-items: center; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+  .who-label { font-size: 12px; color: rgba(255,255,255,0.45); white-space: nowrap; margin-right: 2px; }
+  .who-btn { padding: 5px 14px; font-size: 13px; font-family: 'DM Sans', sans-serif; border: 1px solid rgba(255,255,255,0.2); border-radius: 99px; background: transparent; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .who-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 500; }
+
+  .tabs { display: flex; background: var(--surface2); border-bottom: 1px solid var(--border); position: sticky; top: 113px; z-index: 99; }
+  .tab { flex: 1; padding: 13px 8px; font-size: 14px; font-weight: 500; border: none; background: none; cursor: pointer; color: var(--text3); border-bottom: 2px solid transparent; transition: all 0.15s; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .content { padding: 16px; max-width: 640px; margin: 0 auto; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .cal-card { background: var(--surface); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+  .cal-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+  .cal-title { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); }
+  .cal-numbers { font-family: 'DM Mono', monospace; font-size: 15px; color: var(--text); }
+  .cal-numbers span { color: var(--text3); font-size: 13px; }
+  .track { height: 8px; background: var(--surface2); border-radius: 99px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 99px; background: var(--success); transition: width 0.4s ease; }
+  .fill.warn { background: var(--warn); }
+  .fill.over { background: var(--danger); }
+  .cal-note { font-size: 12px; color: var(--text3); margin-top: 7px; }
+
+  .section { margin-bottom: 20px; }
+  .section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding: 0 2px; }
+  .section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text3); }
+  .meal-tag { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--accent-light); color: var(--accent); font-weight: 500; }
+
+  .check-item { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; cursor: pointer; transition: background 0.12s, border-color 0.12s; user-select: none; }
+  .check-item:active { transform: scale(0.99); }
+  .check-item.done { background: var(--success-bg); border-color: rgba(45,122,79,0.2); }
+  .check-box { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; transition: all 0.15s; background: var(--bg); }
+  .check-item.done .check-box { background: var(--success); border-color: var(--success); }
+  .checkmark { display: none; color: #fff; font-size: 13px; font-weight: 700; }
+  .check-item.done .checkmark { display: block; }
+  .item-body { flex: 1; min-width: 0; }
+  .item-label { font-size: 15px; color: var(--text); }
+  .item-sub { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .item-who { font-size: 11px; color: var(--success); margin-top: 3px; font-family: 'DM Mono', monospace; }
+  .kcal-pill { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); background: var(--surface2); padding: 2px 7px; border-radius: 99px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+  .check-item.done .kcal-pill { background: rgba(45,122,79,0.1); color: var(--success); }
+
+  .progress-row { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; padding: 0 2px; }
+  .progress-text { font-size: 12px; color: var(--text3); }
+  .reset-btn { font-size: 12px; color: var(--text3); background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+  .note-row { display: flex; gap: 8px; margin-bottom: 16px; }
+  .note-row input { flex: 1; padding: 10px 14px; border: 1px solid var(--border2); border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; background: var(--surface); color: var(--text); outline: none; }
+  .note-row input:focus { border-color: var(--accent); }
+  .note-row button { padding: 10px 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .log-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; }
+  .log-entry-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .log-who { font-size: 12px; font-weight: 600; color: var(--accent); }
+  .log-time { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text3); }
+  .log-text { font-size: 14px; color: var(--text); margin-top: 4px; }
+  .empty-log { font-size: 14px; color: var(--text3); padding: 16px 0; text-align: center; }
+
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 16px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 12px; text-align: center; }
+  .stat-num { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--accent); }
+  .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 3px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 8px; }
+  .info-row { display: flex; justify-content: space-between; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  .info-row:last-child { border-bottom: none; }
+  .info-key { font-size: 13px; color: var(--text3); }
+  .info-val { font-size: 13px; color: var(--text); font-weight: 500; text-align: right; }
+
+  .activity-block { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 6px; }
+  .activity-header { display: flex; align-items: center; justify-content: space-between; }
+  .activity-info { display: flex; align-items: baseline; gap: 10px; }
+  .activity-count { font-size: 12px; font-family: 'DM Mono', monospace; color: var(--text3); }
+  .add-activity-btn { padding: 5px 12px; font-size: 13px; font-family: 'DM Sans', sans-serif; border: 1px solid var(--accent); border-radius: 99px; background: transparent; color: var(--accent); cursor: pointer; font-weight: 500; transition: all 0.15s; }
+  .add-activity-btn:active { background: var(--accent-light); }
+  .activity-entries { margin-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+  .activity-entry { display: flex; align-items: center; justify-content: space-between; background: var(--success-bg); border-radius: 6px; padding: 5px 10px; font-size: 12px; color: var(--success); font-family: 'DM Mono', monospace; }
+  .remove-entry { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 14px; padding: 0 2px; }
+
+  /* WEIGHT HISTORY */
+  .weight-input-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+  .weight-input-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .weight-input-row > div { flex: 1; min-width: 100px; }
+  .weight-input-row input, .weight-input-row select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border2);
+    border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif;
+    background: var(--bg); color: var(--text); outline: none;
+  }
+  .weight-input-row input:focus { border-color: var(--accent); }
+  .weight-save-btn { width: 100%; padding: 10px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; }
+  .weight-history-entry { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+  .weight-entry-left { display: flex; align-items: baseline; gap: 10px; }
+  .weight-val { font-size: 18px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--text); }
+  .weight-date { font-size: 12px; color: var(--text3); }
+  .weight-note-text { font-size: 12px; color: var(--text3); margin-top: 2px; }
+  .weight-entry-right { display: flex; align-items: center; gap: 8px; }
+  .weight-delta { font-size: 12px; font-family: 'DM Mono', monospace; padding: 2px 8px; border-radius: 99px; }
+  .weight-delta.up { background: #FDEAEA; color: var(--danger); }
+  .weight-delta.down { background: var(--success-bg); color: var(--success); }
+  .weight-delta.same { background: var(--surface2); color: var(--text3); }
+  .weight-delete-btn { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 16px; padding: 0 2px; }
+  .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 10px; }
+  .chart-svg { width: 100%; overflow: visible; }
+
+  @media (max-width: 480px) {
+    .content { padding: 12px; }
+    .weight-input-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <div class="dog-identity">
+      <div class="paw-circle">🐾</div>
+      <div>
+        <div class="dog-name">Geddy</div>
+        <div class="dog-stats" id="headerStats">17.2 lb · BCS 6.5/9 · 324 kcal/day</div>
+      </div>
+    </div>
+    <div class="date-badge" id="dateBadge"></div>
+  </div>
+  <div class="who-bar">
+    <span class="who-label">You are:</span>
+    <button class="who-btn active" onclick="setWho(this,'Kevin')">Kevin</button>
+    <button class="who-btn" onclick="setWho(this,'Jessica')">Jessica</button>
+    <button class="who-btn" onclick="setWho(this,'Zoe')">Zoe</button>
+    <button class="who-btn" onclick="setWho(this,'Adam')">Adam</button>
+  </div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('today',this)">Today</button>
+  <button class="tab" onclick="switchTab('log',this)">Log</button>
+  <button class="tab" onclick="switchTab('info',this)">Geddy's Info</button>
+</div>
+
+<div class="content">
+
+  <!-- TODAY -->
+  <div id="today" class="tab-panel active">
+    <div class="cal-card">
+      <div class="cal-top">
+        <div class="cal-title">Calories today</div>
+        <div class="cal-numbers" id="calNum">0 <span>/ 324 kcal</span></div>
+      </div>
+      <div class="track"><div class="fill" id="calFill" style="width:0%"></div></div>
+      <div class="cal-note" id="calNote">Tap items below to track</div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Morning meal</div>
+        <div class="meal-tag">meal 1 · ~162 kcal</div>
+      </div>
+      <div class="check-item" id="i-pill" onclick="toggle('i-pill',0)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 allergy pill</div><div class="item-sub">Give with food</div><div class="item-who" id="w-i-pill"></div></div>
+        <div class="kcal-pill">0 kcal</div>
+      </div>
+      <div class="check-item" id="i-kib1" onclick="toggle('i-kib1',28)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">¼ cup kibble w/ dust</div><div class="item-who" id="w-i-kib1"></div></div>
+        <div class="kcal-pill">~28 kcal</div>
+      </div>
+      <div class="check-item" id="i-sp" onclick="toggle('i-sp',25)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 sweet potato piece</div><div class="item-sub">Topper</div><div class="item-who" id="w-i-sp"></div></div>
+        <div class="kcal-pill">~25 kcal</div>
+      </div>
+      <div class="check-item" id="i-vl" onclick="toggle('i-vl',20)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 Vibrant Life treat</div><div class="item-who" id="w-i-vl"></div></div>
+        <div class="kcal-pill">~20 kcal</div>
+      </div>
+      <div class="check-item" id="i-bl1" onclick="toggle('i-bl1',15)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 beef liver treat</div><div class="item-who" id="w-i-bl1"></div></div>
+        <div class="kcal-pill">~15 kcal</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">Evening meal</div>
+        <div class="meal-tag">meal 2 · ~162 kcal</div>
+      </div>
+      <div class="check-item" id="i-kib2" onclick="toggle('i-kib2',28)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">¼ cup kibble w/ dust</div><div class="item-who" id="w-i-kib2"></div></div>
+        <div class="kcal-pill">~28 kcal</div>
+      </div>
+      <div class="check-item" id="i-bl2" onclick="toggle('i-bl2',15)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 beef liver treat</div><div class="item-who" id="w-i-bl2"></div></div>
+        <div class="kcal-pill">~15 kcal</div>
+      </div>
+      <div class="check-item" id="i-gr" onclick="toggle('i-gr',30)">
+        <div class="check-box"><span class="checkmark">✓</span></div>
+        <div class="item-body"><div class="item-label">1 Greenie</div><div class="item-sub">Dental treat</div><div class="item-who" id="w-i-gr"></div></div>
+        <div class="kcal-pill">~30 kcal</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div class="section-title">Daily care</div></div>
+      <div class="activity-block">
+        <div class="activity-header">
+          <div class="activity-info"><span class="item-label">Walks</span><span class="activity-count" id="count-walk">0 today</span></div>
+          <button class="add-activity-btn" onclick="addActivity('walk','Walk')">+ Log walk</button>
+        </div>
+        <div class="activity-entries" id="entries-walk"></div>
+      </div>
+      <div class="activity-block">
+        <div class="activity-header">
+          <div class="activity-info"><span class="item-label">Poos</span><span class="activity-count" id="count-poo">0 today</span></div>
+          <button class="add-activity-btn" onclick="addActivity('poo','Poo')">+ Log poo</button>
+        </div>
+        <div class="activity-entries" id="entries-poo"></div>
+      </div>
+      <div class="activity-block">
+        <div class="activity-header">
+          <div class="activity-info"><span class="item-label">Water refills</span><span class="activity-count" id="count-water">0 today</span></div>
+          <button class="add-activity-btn" onclick="addActivity('water','Water refilled')">+ Log refill</button>
+        </div>
+        <div class="activity-entries" id="entries-water"></div>
+      </div>
+      <div class="activity-block">
+        <div class="activity-header">
+          <div class="activity-info"><span class="item-label">Playtime</span><span class="activity-count" id="count-play">0 today</span></div>
+          <button class="add-activity-btn" onclick="addActivity('play','Playtime')">+ Log play</button>
+        </div>
+        <div class="activity-entries" id="entries-play"></div>
+      </div>
+    </div>
+
+    <div class="progress-row">
+      <span class="progress-text" id="progressText">0 of 12 items done</span>
+      <button class="reset-btn" onclick="resetDay()">Reset today</button>
+    </div>
+  </div>
+
+  <!-- LOG -->
+  <div id="log" class="tab-panel">
+    <div class="section">
+      <div class="section-head"><div class="section-title">Add a note</div></div>
+      <div class="note-row">
+        <input type="text" id="noteInput" placeholder="e.g. Seemed itchy this morning..." />
+        <button onclick="addNote()">Add</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><div class="section-title">Activity log</div></div>
+      <div id="logList"><div class="empty-log">No activity yet today.</div></div>
+    </div>
+  </div>
+
+  <!-- INFO -->
+  <div id="info" class="tab-panel">
+    <div class="stat-grid">
+      <div class="stat-card"><div class="stat-num" id="currentWeightDisplay">17.2</div><div class="stat-lbl">lbs</div></div>
+      <div class="stat-card"><div class="stat-num">6.5</div><div class="stat-lbl">BCS /9</div></div>
+      <div class="stat-card"><div class="stat-num">324</div><div class="stat-lbl">kcal/day</div></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div class="section-title">Weight history</div></div>
+
+      <div class="weight-input-card">
+        <div class="weight-input-row">
+          <div>
+            <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px;">New weight (lbs)</label>
+            <input type="number" id="weightInput" step="0.1" min="0" max="200" placeholder="e.g. 16.8" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px;">Date</label>
+            <input type="date" id="weightDate" />
+          </div>
+          <div>
+            <label style="font-size:12px;color:var(--text3);display:block;margin-bottom:4px;">Note (optional)</label>
+            <input type="text" id="weightNote" placeholder="e.g. vet visit" />
+          </div>
+        </div>
+        <button class="weight-save-btn" onclick="logWeight()">Save weight entry</button>
+      </div>
+
+      <div id="weightChartWrap" style="display:none;" class="chart-wrap">
+        <svg id="weightChart" class="chart-svg" height="120"></svg>
+      </div>
+      <div id="weightHistoryList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><div class="section-title">Vet prescription</div></div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-key">Vet</span><span class="info-val">Dr. Cybulski</span></div>
+        <div class="info-row"><span class="info-key">Last visit</span><span class="info-val">Dec 9, 2025</span></div>
+        <div class="info-row"><span class="info-key">Daily kcal</span><span class="info-val">324 kcal</span></div>
+        <div class="info-row"><span class="info-key">Per meal</span><span class="info-val">162 kcal × 2</span></div>
+        <div class="info-row"><span class="info-key">Prescription</span><span class="info-val">Royal Canin</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><div class="section-title">Feeding guide</div></div>
+      <div class="info-card">
+        <div class="info-row"><span class="info-key">Morning</span><span class="info-val">¼ cup kibble w/ dust</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 sweet potato</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 Vibrant Life treat</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 beef liver treat</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 allergy pill</span></div>
+        <div class="info-row"><span class="info-key">Evening</span><span class="info-val">¼ cup kibble w/ dust</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 beef liver treat</span></div>
+        <div class="info-row"><span class="info-key"></span><span class="info-val">1 Greenie</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let who = 'Kevin';
+  let calTotal = 0;
+  const MAX_CAL = 324;
+  const state = {};
+  const logEntries = [];
+  const activities = { walk: [], poo: [], water: [], play: [] };
+
+  // Weight history — persisted in localStorage so it survives page refreshes
+  let weightHistory = JSON.parse(localStorage.getItem('geddy_weights') || '[]');
+
+  // Set today's date as default in weight date picker
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('weightDate').value = todayStr;
+
+  // Date badge
+  const d = new Date();
+  document.getElementById('dateBadge').textContent = d.toLocaleDateString('en-CA', {weekday:'short', month:'short', day:'numeric'});
+
+  // Init weight display
+  renderWeightHistory();
+
+  function setWho(btn, name) {
+    who = name;
+    document.querySelectorAll('.who-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'log') renderLog();
+  }
+
+  function toggle(id, kcal) {
+    const el = document.getElementById(id);
+    const label = el.querySelector('.item-label').textContent;
+    if (state[id]) {
+      el.classList.remove('done');
+      document.getElementById('w-' + id).textContent = '';
+      calTotal = Math.max(0, calTotal - kcal);
+      delete state[id];
+      addLog('Unmarked: ' + label);
+    } else {
+      el.classList.add('done');
+      const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      document.getElementById('w-' + id).textContent = who + ' · ' + t;
+      calTotal += kcal;
+      state[id] = { who, t };
+      addLog('✓ ' + label + (kcal ? ' (+' + kcal + ' kcal)' : ''));
+    }
+    updateCal();
+    updateProgress();
+  }
+
+  function addActivity(type, label) {
+    const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    const entry = { who, t, id: Date.now() };
+    activities[type].push(entry);
+    addLog('✓ ' + label + ' (' + who + ')');
+    renderActivities(type, label);
+    updateProgress();
+  }
+
+  function removeActivity(type, label, id) {
+    activities[type] = activities[type].filter(e => e.id !== id);
+    addLog('Removed: ' + label);
+    renderActivities(type, label);
+    updateProgress();
+  }
+
+  function renderActivities(type, label) {
+    const container = document.getElementById('entries-' + type);
+    const count = document.getElementById('count-' + type);
+    count.textContent = activities[type].length + ' today';
+    container.innerHTML = activities[type].map(e =>
+      `<div class="activity-entry">
+        <span>${e.who} · ${e.t}</span>
+        <button class="remove-entry" onclick="removeActivity('${type}','${label}',${e.id})" title="Remove">×</button>
+      </div>`
+    ).join('');
+  }
+
+  function updateCal() {
+    const pct = Math.min((calTotal / MAX_CAL) * 100, 100);
+    document.getElementById('calNum').innerHTML = calTotal + ' <span>/ 324 kcal</span>';
+    const fill = document.getElementById('calFill');
+    fill.style.width = pct + '%';
+    fill.className = 'fill' + (pct > 100 ? ' over' : pct > 85 ? ' warn' : '');
+    const left = MAX_CAL - calTotal;
+    document.getElementById('calNote').textContent =
+      left > 0 ? left + ' kcal remaining' : left === 0 ? '✓ Daily goal reached!' : 'Over by ' + Math.abs(left) + ' kcal';
+  }
+
+  function updateProgress() {
+    const done = Object.keys(state).length;
+    const actDone = Object.values(activities).filter(a => a.length > 0).length;
+    const total = document.querySelectorAll('.check-item').length + 4;
+    document.getElementById('progressText').textContent = (done + actDone) + ' of ' + total + ' item types done today';
+  }
+
+  function addLog(text) {
+    const t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    logEntries.unshift({ text, who, t });
+  }
+
+  function addNote() {
+    const inp = document.getElementById('noteInput');
+    if (!inp.value.trim()) return;
+    addLog('Note: ' + inp.value.trim());
+    inp.value = '';
+    renderLog();
+  }
+
+  function renderLog() {
+    const list = document.getElementById('logList');
+    if (!logEntries.length) { list.innerHTML = '<div class="empty-log">No activity yet today.</div>'; return; }
+    list.innerHTML = logEntries.map(e =>
+      `<div class="log-entry">
+        <div class="log-entry-top"><span class="log-who">${e.who}</span><span class="log-time">${e.t}</span></div>
+        <div class="log-text">${e.text}</div>
+      </div>`
+    ).join('');
+  }
+
+  // ---- WEIGHT HISTORY ----
+
+  function logWeight() {
+    const val = parseFloat(document.getElementById('weightInput').value);
+    const date = document.getElementById('weightDate').value;
+    const note = document.getElementById('weightNote').value.trim();
+    if (!val || isNaN(val) || !date) { alert('Please enter a weight and date.'); return; }
+    weightHistory.push({ val, date, note, who, id: Date.now() });
+    weightHistory.sort((a, b) => a.date.localeCompare(b.date));
+    saveWeights();
+    document.getElementById('weightInput').value = '';
+    document.getElementById('weightNote').value = '';
+    renderWeightHistory();
+  }
+
+  function deleteWeight(id) {
+    if (!confirm('Remove this weight entry?')) return;
+    weightHistory = weightHistory.filter(e => e.id !== id);
+    saveWeights();
+    renderWeightHistory();
+  }
+
+  function saveWeights() {
+    localStorage.setItem('geddy_weights', JSON.stringify(weightHistory));
+  }
+
+  function renderWeightHistory() {
+    const list = document.getElementById('weightHistoryList');
+    const chartWrap = document.getElementById('weightChartWrap');
+
+    if (!weightHistory.length) {
+      list.innerHTML = '<div class="empty-log">No weight entries yet. Add the first one above!</div>';
+      chartWrap.style.display = 'none';
+      return;
+    }
+
+    // Update current weight display (most recent entry)
+    const latest = weightHistory[weightHistory.length - 1];
+    document.getElementById('currentWeightDisplay').textContent = latest.val.toFixed(1);
+    document.getElementById('headerStats').textContent = latest.val.toFixed(1) + ' lb · BCS 6.5/9 · 324 kcal/day';
+
+    // Draw sparkline chart if 2+ entries
+    if (weightHistory.length >= 2) {
+      chartWrap.style.display = 'block';
+      drawWeightChart();
+    } else {
+      chartWrap.style.display = 'none';
+    }
+
+    // Render list (newest first)
+    const reversed = [...weightHistory].reverse();
+    list.innerHTML = reversed.map((e, i) => {
+      const prev = reversed[i + 1];
+      let deltaHtml = '';
+      if (prev) {
+        const diff = e.val - prev.val;
+        const sign = diff > 0 ? '+' : '';
+        const cls = diff > 0 ? 'up' : diff < 0 ? 'down' : 'same';
+        deltaHtml = `<span class="weight-delta ${cls}">${sign}${diff.toFixed(1)} lb</span>`;
+      }
+      const dateLabel = new Date(e.date + 'T12:00:00').toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'});
+      return `<div class="weight-history-entry">
+        <div>
+          <div class="weight-entry-left">
+            <span class="weight-val">${e.val.toFixed(1)} lb</span>
+            <span class="weight-date">${dateLabel}</span>
+          </div>
+          ${e.note ? '<div class="weight-note-text">' + e.note + (e.who ? ' · ' + e.who : '') + '</div>' : (e.who ? '<div class="weight-note-text">' + e.who + '</div>' : '')}
+        </div>
+        <div class="weight-entry-right">
+          ${deltaHtml}
+          <button class="weight-delete-btn" onclick="deleteWeight(${e.id})" title="Delete">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function drawWeightChart() {
+    const svg = document.getElementById('weightChart');
+    const W = svg.parentElement.clientWidth - 32;
+    const H = 100;
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('width', W);
+
+    const vals = weightHistory.map(e => e.val);
+    const minV = Math.min(...vals) - 0.5;
+    const maxV = Math.max(...vals) + 0.5;
+    const n = vals.length;
+
+    const px = (i) => (n === 1) ? W / 2 : (i / (n - 1)) * (W - 24) + 12;
+    const py = (v) => H - 16 - ((v - minV) / (maxV - minV)) * (H - 28);
+
+    // Grid lines
+    let lines = '';
+    for (let i = 0; i <= 2; i++) {
+      const y = py(minV + (maxV - minV) * i / 2);
+      lines += `<line x1="0" y1="${y.toFixed(1)}" x2="${W}" y2="${y.toFixed(1)}" stroke="#EDE9E3" stroke-width="1"/>`;
+    }
+
+    // Path
+    const points = vals.map((v, i) => `${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+    const pathD = vals.map((v, i) => (i === 0 ? 'M' : 'L') + px(i).toFixed(1) + ',' + py(v).toFixed(1)).join(' ');
+    const fillD = pathD + ` L${px(n-1).toFixed(1)},${H} L${px(0).toFixed(1)},${H} Z`;
+
+    // Dots + labels
+    let dots = '';
+    vals.forEach((v, i) => {
+      const x = px(i), y = py(v);
+      const isLast = i === n - 1;
+      dots += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${isLast ? 4 : 3}" fill="${isLast ? '#C85A2A' : '#A09A94'}"/>`;
+      if (isLast || i === 0) {
+        const anchor = i === 0 ? 'start' : 'end';
+        dots += `<text x="${x.toFixed(1)}" y="${(y - 7).toFixed(1)}" font-size="11" fill="#6B6560" text-anchor="${anchor}" font-family="DM Mono, monospace">${v.toFixed(1)}</text>`;
+      }
+    });
+
+    svg.innerHTML = lines +
+      `<path d="${fillD}" fill="#C85A2A" fill-opacity="0.08"/>` +
+      `<path d="${pathD}" fill="none" stroke="#C85A2A" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>` +
+      dots;
+  }
+
+  function resetDay() {
+    if (!confirm('Reset all of today\'s checks?')) return;
+    document.querySelectorAll('.check-item').forEach(el => el.classList.remove('done'));
+    document.querySelectorAll('.item-who').forEach(el => el.textContent = '');
+    Object.keys(state).forEach(k => delete state[k]);
+    Object.keys(activities).forEach(k => { activities[k] = []; });
+    ['walk','poo','water','play'].forEach(t => {
+      document.getElementById('entries-' + t).innerHTML = '';
+      document.getElementById('count-' + t).textContent = '0 today';
+    });
+    
